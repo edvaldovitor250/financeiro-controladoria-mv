@@ -21,18 +21,17 @@ public abstract class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 120)
+    @Column(nullable = false, length = 120)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 3)
+    @Column(name = "person_type", nullable = false, length = 3)
     private PersonType personType;
 
     @Embedded
     private Address address;
 
-    @Size(max = 30)
+    @Column(length = 30)
     private String phone;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)

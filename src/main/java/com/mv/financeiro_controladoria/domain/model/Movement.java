@@ -15,26 +15,28 @@ import java.time.LocalDate;
 @Setter
 public class Movement {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private MovementType type;
 
-    @NotNull
+    @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
     @Column(length = 180)
     private String description;
 
-    @NotNull
+    @Column(name = "mov_date", nullable = false)
     private LocalDate date;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
     private Account account;
-
 }
