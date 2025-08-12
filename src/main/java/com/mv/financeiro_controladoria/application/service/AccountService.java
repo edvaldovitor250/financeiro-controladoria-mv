@@ -4,20 +4,16 @@ import com.mv.financeiro_controladoria.application.dto.AccountDTO;
 import com.mv.financeiro_controladoria.domain.model.Account;
 import com.mv.financeiro_controladoria.domain.repository.AccountRepository;
 import com.mv.financeiro_controladoria.domain.repository.MovementRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
 
     private final AccountRepository accountRepository;
     private final MovementRepository movementRepository;
-
-    public AccountService(AccountRepository accountRepository,
-                          MovementRepository movementRepository) {
-        this.accountRepository = accountRepository;
-        this.movementRepository = movementRepository;
-    }
 
     @Transactional
     public Account update(Long id, AccountDTO dto) {

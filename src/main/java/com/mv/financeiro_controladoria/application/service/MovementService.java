@@ -7,21 +7,19 @@ import com.mv.financeiro_controladoria.domain.model.Movement;
 import com.mv.financeiro_controladoria.domain.model.enums.MovementType;
 import com.mv.financeiro_controladoria.domain.repository.AccountRepository;
 import com.mv.financeiro_controladoria.domain.repository.MovementRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Service
+@AllArgsConstructor
 public class MovementService {
 
     private final MovementRepository movementRepository;
     private final AccountRepository accountRepository;
 
-    public MovementService(MovementRepository movementRepository, AccountRepository accountRepository) {
-        this.movementRepository = movementRepository;
-        this.accountRepository = accountRepository;
-    }
 
     @Transactional
     public Movement createForClient(Client client, MovementCreateDTO dto) {

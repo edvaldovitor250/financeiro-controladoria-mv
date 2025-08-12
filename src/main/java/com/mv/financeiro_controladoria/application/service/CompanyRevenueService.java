@@ -12,6 +12,7 @@ import java.util.Map;
 
 @Service
 public class CompanyRevenueService {
+
     private final JdbcTemplate jdbc;
     private SimpleJdbcCall fnCompanyRevenue;
     private SimpleJdbcCall fnClientNetBalance;

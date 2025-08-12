@@ -5,6 +5,7 @@ import com.mv.financeiro_controladoria.application.dto.CompanyRevenueReportDTO;
 import com.mv.financeiro_controladoria.domain.model.Client;
 import com.mv.financeiro_controladoria.domain.repository.ClientRepository;
 import com.mv.financeiro_controladoria.domain.repository.MovementRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,15 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReportService {
 
     private final ClientRepository clientRepo;
     private final MovementRepository movRepo;
     private final FeeCalculator fees = new FeeCalculator();
 
-    public ReportService(ClientRepository c, MovementRepository m) {
-        this.clientRepo = c; this.movRepo = m;
-    }
 
     public ClientBalanceReportDTO clientBalance(Long clientId, LocalDate start, LocalDate end) {
         Client c = clientRepo.findById(clientId).orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
