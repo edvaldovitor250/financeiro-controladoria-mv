@@ -1,6 +1,10 @@
 package com.mv.financeiro_controladoria.api;
 
 import com.mv.financeiro_controladoria.application.service.CompanyRevenueService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,21 +16,24 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @RestController
 @RequestMapping("/api/company")
+@RequiredArgsConstructor
+@Tag(name = "Company", description = "Cálculos de receita (PL/SQL)")
 public class CompanyController {
 
     private final CompanyRevenueService revenueService;
 
-    public CompanyController(CompanyRevenueService revenueService) {
-        this.revenueService = revenueService;
-    }
-
-    // PL/SQL: saldo líquido do cliente
+    @Operation(summary = "Saldo líquido do cliente (PL/SQL)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Saldo retornado"),
+            @ApiResponse(responseCode = "400", description = "Cliente inválido")
+    })
     @GetMapping("/clients/{clientId}/net-balance")
     public ResponseEntity<BigDecimal> getClientNetBalance(@PathVariable Long clientId) {
         return ResponseEntity.ok(revenueService.getClientNetBalance(clientId));
     }
 
-    // PL/SQL: receita da empresa no período
+    @Operation(summary = "Receita da empresa no período (PL/SQL)")
+    @ApiResponse(responseCode = "200", description = "Receita total do período")
     @GetMapping("/revenue")
     public ResponseEntity<BigDecimal> revenue(
             @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate start,
