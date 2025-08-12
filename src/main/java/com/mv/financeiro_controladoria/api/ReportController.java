@@ -1,5 +1,6 @@
 package com.mv.financeiro_controladoria.api;
 
+import com.mv.financeiro_controladoria.application.dto.AllClientsBalanceReportDTO;
 import com.mv.financeiro_controladoria.application.dto.ClientBalanceReportDTO;
 import com.mv.financeiro_controladoria.application.dto.CompanyRevenueReportDTO;
 import com.mv.financeiro_controladoria.application.service.ReportService;
@@ -43,5 +44,13 @@ public class ReportController {
             @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate end) {
         return ResponseEntity.ok(service.companyRevenue(start, end));
+    }
+
+    @Operation(summary = "Relatório de receita da empresa por balance de clientes")
+    @ApiResponse(responseCode = "200", description = "Relatório gerado")
+    @GetMapping("/clients/balances")
+    public ResponseEntity<AllClientsBalanceReportDTO> allBalances(
+            @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(service.allClientsBalanceAt(date));
     }
 }

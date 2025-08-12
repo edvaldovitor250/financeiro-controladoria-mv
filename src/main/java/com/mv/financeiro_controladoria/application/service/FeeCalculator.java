@@ -1,7 +1,10 @@
 package com.mv.financeiro_controladoria.application.service;
 
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 
+@Service
 public class FeeCalculator {
     public BigDecimal pricePerMovement(long totalMovements) {
         if (totalMovements <= 10) return new BigDecimal("1.00");
