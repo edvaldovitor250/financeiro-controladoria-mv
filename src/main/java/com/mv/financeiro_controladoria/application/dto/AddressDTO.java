@@ -1,5 +1,6 @@
 package com.mv.financeiro_controladoria.application.dto;
 
+import com.mv.financeiro_controladoria.domain.model.Address;
 
 public class AddressDTO {
     public String street;
@@ -7,4 +8,15 @@ public class AddressDTO {
     public String state;
     public String zipCode;
     public String complement;
+
+    public static AddressDTO from(Address a) {
+        if (a == null) return null;
+        AddressDTO d = new AddressDTO();
+        d.street = a.getStreet();
+        d.city = a.getCity();
+        d.state = a.getState();
+        d.zipCode = a.getZipCode();
+        d.complement = a.getComplement();
+        return d;
+    }
 }

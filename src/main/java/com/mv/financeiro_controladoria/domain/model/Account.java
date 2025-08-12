@@ -16,7 +16,6 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(length = 40)
     private String bank;
 
@@ -27,5 +26,7 @@ public class Account {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @Column(nullable=false)
+    private Boolean active = true;
 
 }

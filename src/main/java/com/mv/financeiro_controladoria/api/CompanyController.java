@@ -1,8 +1,14 @@
 package com.mv.financeiro_controladoria.api;
 
 import com.mv.financeiro_controladoria.application.service.CompanyRevenueService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import static org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @RestController
 @RequestMapping("/api/company")
@@ -14,10 +20,17 @@ public class CompanyController {
         this.revenueService = revenueService;
     }
 
-    // Exemplo: consultar saldo líquido do cliente calculado via PL/SQL
+    // PL/SQL: saldo líquido do cliente
     @GetMapping("/clients/{clientId}/net-balance")
-    public ResponseEntity<Number> getClientNetBalance(@PathVariable Long clientId) {
-        Number value = revenueService.getClientNetBalance(clientId);
-        return ResponseEntity.ok(value);
+    public ResponseEntity<BigDecimal> getClientNetBalance(@PathVariable Long clientId) {
+        return ResponseEntity.ok(revenueService.getClientNetBalance(clientId));
+    }
+
+    // PL/SQL: receita da empresa no período
+    @GetMapping("/revenue")
+    public ResponseEntity<BigDecimal> revenue(
+            @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate end) {
+        return ResponseEntity.ok(revenueService.revenue(start, end));
     }
 }

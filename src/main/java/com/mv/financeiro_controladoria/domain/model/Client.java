@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,8 +38,15 @@ public abstract class Client {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Account> accounts = new HashSet<>();
 
+    @Column(name="created_at", nullable=false)
+    private LocalDate createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDate.now();
+    }
+
     public Long getId() { return id; }
-    protected void setId(Long id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public PersonType getPersonType() { return personType; }

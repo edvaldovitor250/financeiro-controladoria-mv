@@ -5,31 +5,42 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class CompanyRevenueService {
-
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbc;
+    private SimpleJdbcCall fnCompanyRevenue;
     private SimpleJdbcCall fnClientNetBalance;
 
-    public CompanyRevenueService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    public CompanyRevenueService(JdbcTemplate jdbc) { this.jdbc = jdbc; }
 
     @PostConstruct
     public void init() {
-        // FUNCTION schema.FN_CLIENT_NET_BALANCE(p_client_id IN NUMBER) RETURN NUMBER
-        this.fnClientNetBalance = new SimpleJdbcCall(jdbcTemplate)
-                .withCatalogName("XPTO_PKG")      // se estiver dentro de um pacote; ajuste conforme seu objeto
+        this.fnCompanyRevenue = new SimpleJdbcCall(jdbc)
+                .withCatalogName("XPTO_PKG")
+                .withFunctionName("FN_COMPANY_REVENUE");
+
+        this.fnClientNetBalance = new SimpleJdbcCall(jdbc)
+                .withCatalogName("XPTO_PKG")
                 .withFunctionName("FN_CLIENT_NET_BALANCE");
     }
 
-    public Number getClientNetBalance(Long clientId) {
-        Map<String, Object> in = new HashMap<String, Object>();
+    public BigDecimal revenue(LocalDate start, LocalDate end) {
+        Map<String,Object> in = new HashMap<>();
+        in.put("P_START_DATE", java.sql.Date.valueOf(start));
+        in.put("P_END_DATE", java.sql.Date.valueOf(end));
+        Number n = fnCompanyRevenue.executeFunction(Number.class, in);
+        return new BigDecimal(n.toString());
+    }
+
+    public BigDecimal getClientNetBalance(Long clientId) {
+        Map<String,Object> in = new HashMap<>();
         in.put("P_CLIENT_ID", clientId);
-        // Quando a função não está em package, remova withCatalogName e chame: fnClientNetBalance.executeFunction(...)
-        return fnClientNetBalance.executeFunction(Number.class, in);
+        Number n = fnClientNetBalance.executeFunction(Number.class, in);
+        return new BigDecimal(n.toString());
     }
 }

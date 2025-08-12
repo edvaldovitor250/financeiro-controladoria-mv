@@ -1,8 +1,9 @@
 package com.mv.financeiro_controladoria.application.mapper;
 
+import com.mv.financeiro_controladoria.application.dto.ClientCreateDTO;
+import com.mv.financeiro_controladoria.application.dto.ClientResponseDTO;
 import com.mv.financeiro_controladoria.application.dto.AccountDTO;
 import com.mv.financeiro_controladoria.application.dto.AddressDTO;
-import com.mv.financeiro_controladoria.application.dto.ClientCreateDTO;
 import com.mv.financeiro_controladoria.domain.model.*;
 
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ public final class ClientMapper {
 
     private ClientMapper() { }
 
+    // === EXISTENTE ===
     public static Client toEntity(ClientCreateDTO dto) {
         Address address = toAddress(dto.address);
 
@@ -40,6 +42,17 @@ public final class ClientMapper {
             }
             return pj;
         }
+    }
+
+    // === NOVO: para o seu controller compilar ===
+    public static ClientResponseDTO toResponse(Client c) {
+        ClientResponseDTO d = new ClientResponseDTO();
+        d.id = c.getId();
+        d.name = c.getName();
+        d.phone = c.getPhone();
+        d.personType = c.getPersonType() != null ? c.getPersonType().name() : null;
+        // Se quiser expor endereço/contas depois, podemos estender aqui sem quebrar
+        return d;
     }
 
     private static Address toAddress(AddressDTO a) {
