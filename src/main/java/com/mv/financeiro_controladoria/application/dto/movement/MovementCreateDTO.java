@@ -1,32 +1,36 @@
 package com.mv.financeiro_controladoria.application.dto.movement;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mv.financeiro_controladoria.domain.entity.enums.MovementType;
+import com.mv.financeiro_controladoria.domain.entity.enums.PaymentMethod;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
 
 @Getter
 @Setter
 public class MovementCreateDTO {
-    @NotNull
+
+    @NotNull(message = "type é obrigatório (RECEITA ou DESPESA)")
     private MovementType type;
 
-    @NotNull
-    @Digits(integer = 17, fraction = 2)
-    @Positive
+    @NotNull(message = "paymentMethod é obrigatório (ex.: CREDITO, DEBITO, PIX)")
+    private PaymentMethod paymentMethod;
+
+    @NotNull(message = "amount é obrigatório")
+    @Digits(integer = 17, fraction = 2, message = "amount deve ter no máx 17 inteiros e 2 decimais")
+    @Positive(message = "amount deve ser positivo")
     private BigDecimal amount;
 
-    @Size(max = 180)
-    public String description;
+    @Size(max = 180, message = "description pode ter no máximo 180 caracteres")
+    private String description;
 
-    public LocalDate date;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
 
-    public Long accountId;
+    @Positive(message = "accountId deve ser positivo")
+    private Long accountId;
 }

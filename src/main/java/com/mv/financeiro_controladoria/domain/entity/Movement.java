@@ -1,6 +1,7 @@
 package com.mv.financeiro_controladoria.domain.entity;
 
 import com.mv.financeiro_controladoria.domain.entity.enums.MovementType;
+import com.mv.financeiro_controladoria.domain.entity.enums.PaymentMethod;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,6 +52,10 @@ public class Movement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACCOUNT_ID", foreignKey = @ForeignKey(name = "FK_MOV_ACCOUNT"))
     private Account account;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PAYMENT_METHOD", length = 20, nullable = true)
+    private PaymentMethod paymentMethod;
 
     @Version
     @Column(name = "VERSION", nullable = false)

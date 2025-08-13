@@ -1,7 +1,5 @@
 package com.mv.financeiro_controladoria.infra.persistence.repository;
 
-import com.mv.financeiro_controladoria.application.dto.movement.MovementCreateDTO;
-import com.mv.financeiro_controladoria.application.dto.movement.MovementResponseDTO;
 import com.mv.financeiro_controladoria.domain.entity.Movement;
 import com.mv.financeiro_controladoria.domain.entity.enums.MovementType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +11,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface MovementRepository extends JpaRepository<Movement, Long> {
+
+    long countByClientIdAndType(Long clientId, MovementType type);
+
+    long countByClientIdAndTypeAndDateBetween(Long clientId, MovementType type,
+                                              LocalDate start, LocalDate end);
 
     long countByAccount_Id(Long accountId);
 
