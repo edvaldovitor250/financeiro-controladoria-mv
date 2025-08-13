@@ -22,6 +22,7 @@
     <ol>
       <li><a href="#visao-geral">Visão Geral</a></li>
       <li><a href="#arquitetura-e-pacotes">Arquitetura &amp; Pacotes</a></li>
+      <li><a href="#modelo-de-dados">Modelo de Dados (ER)</a></li>
       <li><a href="#tech-stack">Tech Stack &amp; Dependências</a></li>
       <li><a href="#como-rodar">Como Rodar (Docker &amp; Local)</a></li>
       <li><a href="#configuracao-oracle">Configuração Oracle &amp; PL/SQL</a></li>
@@ -90,6 +91,36 @@
         <li><strong>infra</strong>: config, repositórios JPA, integração Oracle PL/SQL, exceções.</li>
       </ul>
       <section id="tech-stack">
+         <!-- =============================== MODELO DE DADOS (ER) =============================== -->
+    <section id="modelo-de-dados">
+      <h2>🗄️ Modelo de Dados (ER)</h2>
+      <p>
+        Diagrama entidade–relacionamento utilizado pelo projeto. As tabelas <code>CLIENTS</code>, <code>ACCOUNTS</code>,
+        <code>MOVEMENTS</code> e especializações <code>INDIVIDUAL_CLIENTS</code>/<code>CORPORATE_CLIENTS</code> refletem
+        as regras de PF/PJ e o histórico (tabelas <code>HT_*</code>) para auditoria.
+      </p>
+      <figure style="text-align:center; margin: 12px 0;">
+        <!-- Salve a imagem no repo, ex.: docs/assets/er-diagram.png -->
+        <img
+  src="https://github.com/user-attachments/assets/1ac3bfb4-a6d5-40ea-a134-c4df26025b0d"
+  alt="Diagrama ER: Clients, Accounts, Movements e históricos"
+  style="display: block; margin: auto; width: 400px; height: auto; border: 1px solid #333; border-radius: 6px;">
+        <figcaption style="margin-top: 8px; font-size: 0.95em; color: #888;">
+          Figura 1 — Diagrama ER do módulo Financeiro/Controladoria (Oracle XE 21c).
+        </figcaption>
+      </figure>
+      <details>
+        <summary><b>Notas de modelagem</b></summary>
+        <ul>
+          <li><b>CLIENTS</b>: dados cadastrais (PF/PJ via <code>PERSON_TYPE</code>) e endereço.</li>
+          <li><b>INDIVIDUAL_CLIENTS</b> / <b>CORPORATE_CLIENTS</b>: especializações com <code>CPF</code> / <code>CNPJ</code>.</li>
+          <li><b>ACCOUNTS</b>: vínculo 1–N com <code>CLIENTS</code>; exclusão lógica via <code>ACTIVE</code>.</li>
+          <li><b>MOVEMENTS</b>: receita/despesa por cliente/conta; <code>AMOUNT</code> como <code>NUMBER(19,2)</code>;
+              data em <code>MOV_DATE</code>; tipo em <code>MOV_TYPE</code>.</li>
+          <li><b>HT_*</b>: tabelas históricas para rastreabilidade.</li>
+        </ul>
+      </details>
+    </section>
 <section id="tech-stack">
   <h2 id="tech-stack-utilizada">Tech Stack Utilizada 🛠️</h2>
 
