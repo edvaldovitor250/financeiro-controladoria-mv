@@ -1,6 +1,7 @@
 package com.mv.financeiro_controladoria.infra.persistence.repository;
 
-import com.mv.financeiro_controladoria.domain.entity.Client;
+import com.mv.financeiro_controladoria.application.dto.movement.MovementCreateDTO;
+import com.mv.financeiro_controladoria.application.dto.movement.MovementResponseDTO;
 import com.mv.financeiro_controladoria.domain.entity.Movement;
 import com.mv.financeiro_controladoria.domain.entity.enums.MovementType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,16 +14,18 @@ import java.util.List;
 
 public interface MovementRepository extends JpaRepository<Movement, Long> {
 
-    List<Movement> findByClient(Client client);
-
-    List<Movement> findByClientAndDateBetween(Client client, LocalDate start, LocalDate end);
-
-    List<Movement> findByClientAndType(Client client, MovementType type);
-
-    List<Movement> findByClientAndTypeAndDateBetween(Client client, MovementType type,
-                                                     LocalDate start, LocalDate end);
-
     long countByAccount_Id(Long accountId);
+
+    List<Movement> findByClientId(Long clientId);
+
+    List<Movement> findByClientIdAndType(Long clientId, MovementType type);
+
+    List<Movement> findByClientIdAndDateBetween(Long clientId, LocalDate start, LocalDate end);
+
+    List<Movement> findByClientIdAndTypeAndDateBetween(Long clientId, MovementType type, LocalDate start, LocalDate end);
+
+    Movement getById(Long id);
+
 
     @Query("select coalesce(sum(m.amount), 0) " +
             "from Movement m " +

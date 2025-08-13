@@ -27,19 +27,19 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- JPA (ESSENCIAL para criar os JpaRepository) -->
+		<!-- JPA  -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- Bean Validation (javax.* no Spring Boot 2.x) -->
+		<!-- Bean Validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- Oracle JDBC (Java 8) -->
+		<!-- Oracle JDBC  -->
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
@@ -53,7 +53,7 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Devtools (opcional) -->
+		<!-- Devtools -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -74,11 +74,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>13.0</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- Compilar com Java 8 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

@@ -2,24 +2,29 @@ package com.mv.financeiro_controladoria.application.usecase;
 
 import com.mv.financeiro_controladoria.application.dto.common.AddressDTO;
 import com.mv.financeiro_controladoria.application.dto.client.ClientCreateDTO;
+import com.mv.financeiro_controladoria.application.dto.client.ClientResponseDTO;
 import com.mv.financeiro_controladoria.application.dto.client.ClientUpdateDTO;
 import com.mv.financeiro_controladoria.application.mapper.ClientMapper;
 import com.mv.financeiro_controladoria.domain.entity.Address;
 import com.mv.financeiro_controladoria.domain.entity.Client;
 import com.mv.financeiro_controladoria.infra.persistence.repository.ClientRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+import java.awt.print.Pageable;
+
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ClientService {
 
     private final ClientRepository clientRepository;
     private final MovementService movementService;
 
     @Transactional
-    public Client create(ClientCreateDTO dto) {
+    public ClientResponseDTO create(ClientCreateDTO dto) {
         if (dto.initialMovement == null) {
             throw new IllegalArgumentException("Movimentação inicial é obrigatória.");
         }
@@ -49,27 +54,44 @@ public class ClientService {
 
         Client entity = ClientMapper.toEntity(dto);
         Client saved = clientRepository.save(entity);
+
         movementService.createForClient(saved, dto.initialMovement);
-        return saved;
+
+        return ClientMapper.toResponse(saved);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ClientResponseDTO> list(Pageable pageable) {
+        return clientRepository.findAll((org.springframework.data.domain.Pageable) pageable)
+                .map(ClientMapper::toResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public ClientResponseDTO getById(Long id) {
+        Client c = clientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
+        return ClientMapper.toResponse(c);
+    }
 
     @Transactional
-    public Client update(Long id, ClientUpdateDTO dto) {
+    public ClientResponseDTO update(Long id, ClientUpdateDTO dto) {
         Client c = clientRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
 
         if (dto.personType != null && !dto.personType.equalsIgnoreCase(c.getPersonType().name())) {
             throw new IllegalStateException("Tipo de pessoa não pode ser alterado.");
         }
-        if (c instanceof com.mv.financeiro_controladoria.domain.entity.IndividualClient && dto.individual != null && dto.individual.cpf != null) {
-            String atual = ((com.mv.financeiro_controladoria.domain.entity.IndividualClient)c).getCpf();
+
+        if (c instanceof com.mv.financeiro_controladoria.domain.entity.IndividualClient
+                && dto.individual != null && dto.individual.cpf != null) {
+            String atual = ((com.mv.financeiro_controladoria.domain.entity.IndividualClient) c).getCpf();
             if (atual != null && !atual.equals(dto.individual.cpf)) {
                 throw new IllegalStateException("CPF não pode ser alterado.");
             }
         }
-        if (c instanceof com.mv.financeiro_controladoria.domain.entity.CorporateClient && dto.corporate != null && dto.corporate.cnpj != null) {
-            String atual = ((com.mv.financeiro_controladoria.domain.entity.CorporateClient)c).getCnpj();
+        if (c instanceof com.mv.financeiro_controladoria.domain.entity.CorporateClient
+                && dto.corporate != null && dto.corporate.cnpj != null) {
+            String atual = ((com.mv.financeiro_controladoria.domain.entity.CorporateClient) c).getCnpj();
             if (atual != null && !atual.equals(dto.corporate.cnpj)) {
                 throw new IllegalStateException("CNPJ não pode ser alterado.");
             }
@@ -86,20 +108,22 @@ public class ClientService {
             a.setComplement(dto.address.complement);
             c.setAddress(a);
         }
-        return clientRepository.save(c);
+
+        Client saved = clientRepository.save(c);
+        return ClientMapper.toResponse(saved);
     }
 
     @Transactional(readOnly = true)
     public AddressDTO getAddress(Long clientId) {
         Client c = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
         return AddressDTO.from(c.getAddress());
     }
 
     @Transactional
     public AddressDTO updateAddress(Long clientId, AddressDTO dto) {
         Client c = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
         Address a = c.getAddress() != null ? c.getAddress() : new Address();
         a.setStreet(dto.street);
         a.setCity(dto.city);

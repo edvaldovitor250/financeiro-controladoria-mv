@@ -4,85 +4,93 @@ import com.mv.financeiro_controladoria.application.dto.client.ClientCreateDTO;
 import com.mv.financeiro_controladoria.application.dto.client.ClientResponseDTO;
 import com.mv.financeiro_controladoria.application.dto.client.ClientUpdateDTO;
 import com.mv.financeiro_controladoria.application.dto.common.AddressDTO;
-import com.mv.financeiro_controladoria.application.mapper.ClientMapper;
 import com.mv.financeiro_controladoria.application.usecase.ClientService;
-import com.mv.financeiro_controladoria.domain.entity.Client;
-import com.mv.financeiro_controladoria.infra.persistence.repository.ClientRepository;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/clients")
 @RequiredArgsConstructor
 @Tag(name = "Clients", description = "CRUD de clientes e endereço")
+@Validated
 public class ClientController {
 
     private final ClientService service;
-    private final ClientRepository clientRepository;
 
     @Operation(summary = "Cadastrar cliente (PF/PJ) com movimentação inicial obrigatória")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Cliente criado"),
+            @ApiResponse(responseCode = "201", description = "Cliente criado"),
             @ApiResponse(responseCode = "400", description = "Validação ou regra de negócio")
     })
     @PostMapping
-    public ResponseEntity<ClientResponseDTO> create(@RequestBody ClientCreateDTO dto) {
-        Client c = service.create(dto);
-        return ResponseEntity.ok(ClientMapper.toResponse(c));
+    public ResponseEntity<ClientResponseDTO> create(@Valid @RequestBody ClientCreateDTO dto,
+                                                    UriComponentsBuilder uriBuilder) {
+        ClientResponseDTO created = service.create(dto);
+        URI location = uriBuilder.path("/api/clients/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(created);
     }
 
-    @Operation(summary = "Listar clientes")
+    @Operation(summary = "Listar clientes (paginado)")
     @ApiResponse(responseCode = "200", description = "Lista de clientes")
     @GetMapping
-    public ResponseEntity<List<ClientResponseDTO>> list() {
-        List<ClientResponseDTO> list = clientRepository.findAll().stream()
-                .map(ClientMapper::toResponse)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(list);
+    public ResponseEntity<Page<ClientResponseDTO>> list(Pageable pageable) {
+        return ResponseEntity.ok(service.list((java.awt.print.Pageable) pageable));
     }
 
     @Operation(summary = "Buscar cliente por ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
-            @ApiResponse(responseCode = "400", description = "Cliente não encontrado")
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> get(@PathVariable Long id) {
-        Client c = clientRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
-        return ResponseEntity.ok(ClientMapper.toResponse(c));
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @Operation(summary = "Atualizar dados do cliente (mantém histórico sensível)")
-    @ApiResponse(responseCode = "200", description = "Cliente atualizado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cliente atualizado"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Validação ou regra de negócio")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<ClientResponseDTO> update(@PathVariable Long id,
-                                                    @RequestBody ClientUpdateDTO dto) {
-        Client c = service.update(id, dto);
-        return ResponseEntity.ok(ClientMapper.toResponse(c));
+                                                    @Valid @RequestBody ClientUpdateDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @Operation(summary = "Obter endereço do cliente")
-    @ApiResponse(responseCode = "200", description = "Endereço")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Endereço"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    })
     @GetMapping("/{id}/address")
     public ResponseEntity<AddressDTO> getAddress(@PathVariable Long id) {
-        AddressDTO addr = service.getAddress(id);
-        return ResponseEntity.ok(addr);
+        return ResponseEntity.ok(service.getAddress(id));
     }
 
     @Operation(summary = "Atualizar endereço do cliente")
-    @ApiResponse(responseCode = "200", description = "Endereço atualizado")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Endereço atualizado"),
+            @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Validação ou regra de negócio")
+    })
     @PutMapping("/{id}/address")
     public ResponseEntity<AddressDTO> updateAddress(@PathVariable Long id,
-                                                    @RequestBody AddressDTO dto) {
-        AddressDTO updated = service.updateAddress(id, dto);
-        return ResponseEntity.ok(updated);
+                                                    @Valid @RequestBody AddressDTO dto) {
+        return ResponseEntity.ok(service.updateAddress(id, dto));
     }
 }
