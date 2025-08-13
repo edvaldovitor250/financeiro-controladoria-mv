@@ -101,11 +101,12 @@
       </p>
       <figure style="text-align:center; margin: 12px 0;">
         <!-- Salve a imagem no repo, ex.: docs/assets/er-diagram.png -->
-        <img
-  src="https://github.com/user-attachments/assets/1ac3bfb4-a6d5-40ea-a134-c4df26025b0d"
-  alt="Diagrama ER: Clients, Accounts, Movements e históricos"
-  style="display: block; margin: auto; width: 400px; height: auto; border: 1px solid #333; border-radius: 6px;">
-        <figcaption style="margin-top: 8px; font-size: 0.95em; color: #888;">
+        <div style="text-align: center;">
+  <img
+    src="https://github.com/user-attachments/assets/1ac3bfb4-a6d5-40ea-a134-c4df26025b0d"
+    alt="Diagrama ER: Clients, Accounts, Movements e históricos"
+    style="width: 550px; height: auto; border: 1px solid #333; border-radius: 6px;">
+</div>
           Figura 1 — Diagrama ER do módulo Financeiro/Controladoria (Oracle XE 21c).
         </figcaption>
       </figure>
