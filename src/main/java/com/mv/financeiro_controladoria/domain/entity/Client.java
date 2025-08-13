@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(name = "clients")
 @Getter
 @Setter
-public abstract class Client {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

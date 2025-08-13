@@ -1,104 +1,117 @@
-//package com.mv.financeiro_controladoria.application.service;
-//
-//import com.mv.financeiro_controladoria.application.dto.report.ClientBalanceReportDTO;
-//import com.mv.financeiro_controladoria.application.dto.report.CompanyRevenueReportDTO;
-//import com.mv.financeiro_controladoria.domain.model.Client;
-//import com.mv.financeiro_controladoria.domain.repository.ClientRepository;
-//import com.mv.financeiro_controladoria.domain.repository.MovementRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//
-//import java.math.BigDecimal;
-//import java.time.LocalDate;
-//import java.util.Arrays;
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//@ExtendWith(MockitoExtension.class)
-//class ReportServiceTest {
-//
-//    @Mock private ClientRepository clientRepository;
-//    @Mock private MovementRepository movementRepository;
-//
-//    private ReportService service;
-//
-//    @BeforeEach
-//    void setUp() {
-//        service = new ReportService(clientRepository, movementRepository);
-//    }
-//
-//    @Test
-//    void clientBalance_ok() {
-//        Long clientId = 1L;
-//        Client c = new Client();
-//        c.setId(clientId);
-//        c.setName("Cliente A");
-//
-//        LocalDate start = LocalDate.of(2025, 1, 1);
-//        LocalDate end   = LocalDate.of(2025, 1, 31);
-//
-//        when(clientRepository.findById(clientId)).thenReturn(Optional.of(c));
-//        when(movementRepository.sumCreditByClientAndPeriod(clientId, start, end)).thenReturn(new BigDecimal("300.00"));
-//        when(movementRepository.sumDebitByClientAndPeriod(clientId, start, end)).thenReturn(new BigDecimal("120.00"));
-//        when(movementRepository.countByClientAndPeriod(clientId, start, end)).thenReturn(12L);
-//
-//        ClientBalanceReportDTO dto = service.clientBalance(clientId, start, end);
-//
-//        assertEquals(clientId, dto.clientId);
-//        assertEquals("Cliente A", dto.clientName);
-//        assertEquals(new BigDecimal("180.00"), dto.currentBalance);
-//        assertEquals(12L, dto.totalCount);
-//        assertEquals(new BigDecimal("9.00"), dto.feePaid);
-//        assertEquals(start, dto.start);
-//        assertEquals(end, dto.end);
-//    }
-//
-//    @Test
-//    void clientBalance_clienteNaoEncontrado() {
-//        when(clientRepository.findById(99L)).thenReturn(Optional.empty());
-//        assertThrows(IllegalArgumentException.class,
-//                () -> service.clientBalance(99L, LocalDate.now().minusDays(10), LocalDate.now()));
-//    }
-//
-//    @Test
-//    void companyRevenue_ok() {
-//        Client c1 = new Client(); c1.setId(1L); c1.setName("A");
-//        Client c2 = new Client(); c2.setId(2L); c2.setName("B");
-//        Client c3 = new Client(); c3.setId(3L); c3.setName("C");
-//
-//        when(clientRepository.findAll()).thenReturn(Arrays.asList(c1, c2, c3));
-//
-//        LocalDate start = LocalDate.of(2025, 2, 1);
-//        LocalDate end   = LocalDate.of(2025, 2, 28);
-//
-//        when(movementRepository.countByClientAndPeriod(1L, start, end)).thenReturn(5L);
-//        when(movementRepository.countByClientAndPeriod(2L, start, end)).thenReturn(15L);
-//        when(movementRepository.countByClientAndPeriod(3L, start, end)).thenReturn(25L);
-//
-//        CompanyRevenueReportDTO dto = service.companyRevenue(start, end);
-//
-//        assertEquals(start, dto.start);
-//        assertEquals(end, dto.end);
-//        assertEquals(3, dto.items.size());
-//
-//        CompanyRevenueReportDTO.Item i1 = dto.items.stream().filter(i -> i.clientId.equals(1L)).findFirst().orElseThrow();
-//        CompanyRevenueReportDTO.Item i2 = dto.items.stream().filter(i -> i.clientId.equals(2L)).findFirst().orElseThrow();
-//        CompanyRevenueReportDTO.Item i3 = dto.items.stream().filter(i -> i.clientId.equals(3L)).findFirst().orElseThrow();
-//
-//        assertEquals(5L, i1.totalMovements);
-//        assertEquals(new BigDecimal("5.00"), i1.fee);
-//
-//        assertEquals(15L, i2.totalMovements);
-//        assertEquals(new BigDecimal("11.25"), i2.fee);
-//
-//        assertEquals(25L, i3.totalMovements);
-//        assertEquals(new BigDecimal("12.50"), i3.fee);
-//
-//        assertEquals(new BigDecimal("28.75"), dto.totalRevenue);
-//    }
-//}
+package com.mv.financeiro_controladoria.application.service;
+
+import com.mv.financeiro_controladoria.application.dto.report.AllClientsBalanceReportDTO;
+import com.mv.financeiro_controladoria.application.dto.report.ClientBalanceReportDTO;
+import com.mv.financeiro_controladoria.application.dto.report.CompanyRevenueReportDTO;
+import com.mv.financeiro_controladoria.application.usecase.BillingService;
+import com.mv.financeiro_controladoria.domain.entity.Client;
+import com.mv.financeiro_controladoria.infra.persistence.repository.ClientRepository;
+import com.mv.financeiro_controladoria.infra.persistence.repository.MovementRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class ReportServiceTest {
+
+    @Mock ClientRepository clientRepo;
+    @Mock MovementRepository movRepo;
+    @Mock BillingService billing;
+
+    @InjectMocks ReportService service;
+
+    @Test
+    void clientBalance_ok() {
+        Long clientId = 1L;
+        LocalDate start = LocalDate.of(2025, 1, 10);
+        LocalDate end   = LocalDate.of(2025, 1, 31);
+
+        Client c = new Client();
+        c.setId(clientId);
+        c.setName("Ana");
+        c.setCreatedAt(LocalDate.of(2025, 1, 1));
+        when(clientRepo.findById(clientId)).thenReturn(Optional.of(c));
+
+        when(movRepo.sumCreditByClientAndPeriod(clientId, start, end)).thenReturn(new BigDecimal("300.00"));
+        when(movRepo.sumDebitByClientAndPeriod(clientId, start, end)).thenReturn(new BigDecimal("180.00"));
+        when(movRepo.countByClientAndPeriod(clientId, start, end)).thenReturn(15L);
+
+        when(billing.feeForClientOn30DayCycles(clientId, start, end)).thenReturn(new BigDecimal("11.25"));
+
+        when(movRepo.sumCreditByClientUntil(clientId, start.minusDays(1))).thenReturn(new BigDecimal("100.00"));
+        when(movRepo.sumDebitByClientUntil(clientId, start.minusDays(1))).thenReturn(new BigDecimal("40.00"));
+
+        ClientBalanceReportDTO dto = service.clientBalance(clientId, start, end);
+
+        assertEquals(clientId, dto.clientId);
+        assertEquals("Ana", dto.clientName);
+        assertEquals(LocalDate.of(2025, 1, 1), dto.clientSince);
+        assertEquals(15L, dto.totalCount);
+        assertEquals(new BigDecimal("11.25"), dto.feePaid);
+        assertEquals(new BigDecimal("60.00"), dto.initialBalance);
+        assertEquals(new BigDecimal("180.00"), dto.currentBalance);
+        assertEquals(start, dto.start);
+        assertEquals(end, dto.end);
+    }
+
+    @Test
+    void companyRevenue_ok() {
+        Client a = new Client(); a.setId(1L); a.setName("A");
+        Client b = new Client(); b.setId(2L); b.setName("B");
+        when(clientRepo.findAll()).thenReturn(Arrays.asList(a, b));
+
+        LocalDate start = LocalDate.of(2025, 1, 1);
+        LocalDate end   = LocalDate.of(2025, 1, 31);
+
+        when(movRepo.countByClientAndPeriod(1L, start, end)).thenReturn(12L);
+        when(movRepo.countByClientAndPeriod(2L, start, end)).thenReturn(5L);
+
+        when(billing.feeForClientOn30DayCycles(1L, start, end)).thenReturn(new BigDecimal("9.00"));
+        when(billing.feeForClientOn30DayCycles(2L, start, end)).thenReturn(new BigDecimal("5.00"));
+
+        CompanyRevenueReportDTO rep = service.companyRevenue(start, end);
+
+        assertEquals(start, rep.start);
+        assertEquals(end, rep.end);
+        assertEquals(new BigDecimal("14.00"), rep.total);
+        assertEquals(2, rep.clients.size());
+
+        assertEquals(1L, rep.clients.get(0).clientId);
+        assertEquals("A", rep.clients.get(0).clientName);
+        assertEquals(12L, rep.clients.get(0).movementCount);
+        assertEquals(new BigDecimal("9.00"), rep.clients.get(0).amount);
+
+        assertEquals(2L, rep.clients.get(1).clientId);
+        assertEquals("B", rep.clients.get(1).clientName);
+        assertEquals(5L, rep.clients.get(1).movementCount);
+        assertEquals(new BigDecimal("5.00"), rep.clients.get(1).amount);
+    }
+
+    @Test
+    void allClientsBalanceAt_ok() {
+        LocalDate ref = LocalDate.of(2025, 1, 31);
+        Client a = new Client(); a.setId(1L); a.setName("A"); a.setCreatedAt(LocalDate.of(2025, 1, 1));
+        Client b = new Client(); b.setId(2L); b.setName("B"); b.setCreatedAt(LocalDate.of(2025, 1, 5));
+        when(clientRepo.findAll()).thenReturn(Arrays.asList(a, b));
+
+        when(movRepo.sumCreditByClientUntil(1L, ref)).thenReturn(new BigDecimal("150"));
+        when(movRepo.sumDebitByClientUntil(1L, ref)).thenReturn(new BigDecimal("30"));
+        when(movRepo.sumCreditByClientUntil(2L, ref)).thenReturn(new BigDecimal("80"));
+        when(movRepo.sumDebitByClientUntil(2L, ref)).thenReturn(new BigDecimal("20"));
+
+        AllClientsBalanceReportDTO dto = service.allClientsBalanceAt(ref);
+
+        assertEquals(ref, dto.date);
+        assertEquals(2, dto.items.size());
+    }
+}
