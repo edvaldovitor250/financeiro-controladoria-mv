@@ -72,8 +72,8 @@ public class CompanyRevenueService {
                         "      MOV_DATE   DATE           NOT NULL\n" +
                         "    )';\n" +
                         "    -- Índices opcionais (exemplo)\n" +
-                        "    EXECUTE IMMEDIATE ''CREATE INDEX IDX_MOV_CLIENT ON MOVEMENTS(CLIENT_ID)'';\n" +
-                        "    EXECUTE IMMEDIATE ''CREATE INDEX IDX_MOV_DATE   ON MOVEMENTS(MOV_DATE)'';\n" +
+                        "    EXECUTE IMMEDIATE 'CREATE INDEX IDX_MOV_CLIENT ON MOVEMENTS(CLIENT_ID)';\n" +
+                        "    EXECUTE IMMEDIATE 'CREATE INDEX IDX_MOV_DATE   ON MOVEMENTS(MOV_DATE)';\n" +
                         "  END IF;\n" +
                         "END;";
         jdbc.execute(plsql);
