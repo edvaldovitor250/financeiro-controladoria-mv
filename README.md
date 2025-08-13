@@ -187,7 +187,6 @@
 &lt;/dependency&gt;</code></pre>
   </details>
 </section>
-
     <!-- =============================== COMO RODAR =============================== -->
     <section id="como-rodar">
       <h2>🚀 Como Rodar</h2>
