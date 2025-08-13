@@ -61,7 +61,7 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Conta não encontrada"));
 
         if (Boolean.FALSE.equals(acc.getActive())) {
-            return; // idempotente
+            return;
         }
         acc.setActive(false);
     }

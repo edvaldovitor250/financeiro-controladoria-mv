@@ -22,7 +22,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Override das propriedades para rodar DENTRO da rede do compose
       SPRING_DATASOURCE_URL: jdbc:oracle:thin:@//oracle-xe:1521/XEPDB1
       SPRING_DATASOURCE_USERNAME: app
       SPRING_DATASOURCE_PASSWORD: app_pwd
@@ -32,7 +31,6 @@ services:
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
 
-      # Swagger (opcional)
       SPRINGDOC_API_DOCS_PATH: /v3/api-docs
       SPRINGDOC_SWAGGER_UI_PATH: /swagger-ui.html
       SPRINGDOC_SWAGGER_UI_DISPLAY_OPERATION_ID: "true"

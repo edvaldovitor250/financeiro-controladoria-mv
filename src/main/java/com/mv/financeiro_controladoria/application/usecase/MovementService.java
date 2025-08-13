@@ -55,12 +55,10 @@ public class MovementService {
         return MovementResponseDTO.from(saved);
     }
 
-    // compatibilidade com versão antiga
     public MovementResponseDTO createForClient(Client client, MovementCreateDTO dto) {
         return createForClient(client.getId(), dto);
     }
 
-    // ---------- MÉTODOS FALTANTES ----------
 
     @Transactional(readOnly = true)
     public List<MovementResponseDTO> listByClient(Long clientId, LocalDate start, LocalDate end, MovementType type) {

@@ -13,5 +13,5 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("select count(pj) from CorporateClient pj where pj.cnpj = :cnpj")
     long countByCnpj(@Param("cnpj") String cnpj);
 
-    }
+}
 

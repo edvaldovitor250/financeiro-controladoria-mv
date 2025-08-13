@@ -2,24 +2,20 @@ package com.mv.financeiro_controladoria.domain.entity.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
+@Getter
 public enum PersonType {
     PF("Pessoa Física"),
     PJ("Pessoa Jurídica");
 
     private final String description;
 
-    PersonType(String description) {
-        this.description = description;
-    }
-
     @JsonValue
     public String getCode() {
         return name();
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     @JsonCreator
