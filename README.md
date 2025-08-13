@@ -405,7 +405,6 @@ END XPTO_PKG;
   </ul>
 </section>
 
-    <!-- =============================== ENDPOINTS =============================== -->
   <section id="endpoints">
   <h2>📦 Exemplos de Requisição e Resposta</h2>
   <p>Todos os endpoints aceitam e retornam JSON. Use <code>Content-Type: application/json</code>.</p>
@@ -686,7 +685,7 @@ END XPTO_PKG;
 }</code></pre>
 </section>
     <!-- =============================== TESTES =============================== -->
-<section id="testes">
+<section id="tratamento-erros">
   <h2>✅ Testes</h2>
 
   <p><b>Objetivo:</b> garantir regras de negócio (PF/PJ, imutabilidade de CPF/CNPJ e <code>personType</code>,
@@ -891,7 +890,7 @@ void fee_consideraCiclosDe30Dias_ancoradosEmCreatedAt() {
   </ul>
 </section>
     <!-- =============================== LICENÇA =============================== -->
-    <section id="desenvolvedor">
+    <section id="licenca-autor">
   <h2 align="center">💻 Desenvolvedor</h2>
   <div align="center">
     <a href="https://github.com/edvaldovitor250" target="_blank" rel="noopener">
