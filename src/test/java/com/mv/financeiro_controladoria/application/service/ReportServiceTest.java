@@ -1,7 +1,7 @@
 //package com.mv.financeiro_controladoria.application.service;
 //
-//import com.mv.financeiro_controladoria.application.dto.ClientBalanceReportDTO;
-//import com.mv.financeiro_controladoria.application.dto.CompanyRevenueReportDTO;
+//import com.mv.financeiro_controladoria.application.dto.report.ClientBalanceReportDTO;
+//import com.mv.financeiro_controladoria.application.dto.report.CompanyRevenueReportDTO;
 //import com.mv.financeiro_controladoria.domain.model.Client;
 //import com.mv.financeiro_controladoria.domain.repository.ClientRepository;
 //import com.mv.financeiro_controladoria.domain.repository.MovementRepository;

@@ -1,10 +1,10 @@
 package com.mv.financeiro_controladoria.application.mapper;
 
-import com.mv.financeiro_controladoria.application.dto.ClientCreateDTO;
-import com.mv.financeiro_controladoria.application.dto.ClientResponseDTO;
-import com.mv.financeiro_controladoria.application.dto.AccountDTO;
-import com.mv.financeiro_controladoria.application.dto.AddressDTO;
-import com.mv.financeiro_controladoria.domain.model.*;
+import com.mv.financeiro_controladoria.application.dto.client.ClientCreateDTO;
+import com.mv.financeiro_controladoria.application.dto.client.ClientResponseDTO;
+import com.mv.financeiro_controladoria.application.dto.account.AccountDTO;
+import com.mv.financeiro_controladoria.application.dto.common.AddressDTO;
+import com.mv.financeiro_controladoria.domain.entity.*;
 
 import java.util.stream.Collectors;
 

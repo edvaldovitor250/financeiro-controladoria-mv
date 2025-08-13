@@ -1,11 +1,12 @@
 package com.mv.financeiro_controladoria.application.service;
 
-import com.mv.financeiro_controladoria.application.dto.AllClientsBalanceReportDTO;
-import com.mv.financeiro_controladoria.application.dto.ClientBalanceReportDTO;
-import com.mv.financeiro_controladoria.application.dto.CompanyRevenueReportDTO;
-import com.mv.financeiro_controladoria.domain.model.Client;
-import com.mv.financeiro_controladoria.domain.repository.ClientRepository;
-import com.mv.financeiro_controladoria.domain.repository.MovementRepository;
+import com.mv.financeiro_controladoria.application.dto.report.AllClientsBalanceReportDTO;
+import com.mv.financeiro_controladoria.application.dto.report.ClientBalanceReportDTO;
+import com.mv.financeiro_controladoria.application.dto.report.CompanyRevenueReportDTO;
+import com.mv.financeiro_controladoria.application.usecase.BillingService;
+import com.mv.financeiro_controladoria.domain.entity.Client;
+import com.mv.financeiro_controladoria.infra.persistence.repository.ClientRepository;
+import com.mv.financeiro_controladoria.infra.persistence.repository.MovementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

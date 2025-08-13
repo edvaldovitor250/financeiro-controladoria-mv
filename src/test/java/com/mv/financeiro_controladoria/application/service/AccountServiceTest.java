@@ -1,10 +1,11 @@
 package com.mv.financeiro_controladoria.application.service;
 
 
-import com.mv.financeiro_controladoria.application.dto.AccountDTO;
-import com.mv.financeiro_controladoria.domain.model.Account;
-import com.mv.financeiro_controladoria.domain.repository.AccountRepository;
-import com.mv.financeiro_controladoria.domain.repository.MovementRepository;
+import com.mv.financeiro_controladoria.application.dto.account.AccountDTO;
+import com.mv.financeiro_controladoria.application.usecase.AccountService;
+import com.mv.financeiro_controladoria.domain.entity.Account;
+import com.mv.financeiro_controladoria.infra.persistence.repository.AccountRepository;
+import com.mv.financeiro_controladoria.infra.persistence.repository.MovementRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
